@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
+import { Redirect } from "expo-router";
 import { ThemedView } from "../components/ThemedView/ThemedView";
 import { Color } from "../constants/colors";
-import Chat from "../features/Chat/Chat";
-import Login from "../features/Login/Login";
 import { setToken } from "../redux/global";
 import { getToken } from "../redux/global/global.selector";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -44,7 +43,7 @@ export default function HomeScreen() {
     );
   }
 
-  return token ? <Chat /> : <Login />;
+  return token ? <Redirect href="/chat" /> : <Redirect href="/login" />;
 }
 
 const styles = StyleSheet.create({

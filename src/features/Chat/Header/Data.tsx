@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "center",
     gap: 4,
-    width: "100%",
+    flex: 1,
     backgroundColor: "transparent",
   },
 });
