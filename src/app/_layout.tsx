@@ -3,6 +3,7 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -54,17 +55,19 @@ export default function RootLayout() {
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <SocketProvider>
-            <GestureHandlerRootView>
-              <Stack>
-                <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen name="login" options={{ headerShown: false }} />
-                <Stack.Screen name="chat" options={{ headerShown: false }} />
-              </Stack>
+          <ActionSheetProvider>
+            <SocketProvider>
+              <GestureHandlerRootView>
+                <Stack>
+                  <Stack.Screen name="index" options={{ headerShown: false }} />
+                  <Stack.Screen name="login" options={{ headerShown: false }} />
+                  <Stack.Screen name="chat" options={{ headerShown: false }} />
+                </Stack>
 
-              <StatusBar style="light" />
-            </GestureHandlerRootView>
-          </SocketProvider>
+                <StatusBar style="light" />
+              </GestureHandlerRootView>
+            </SocketProvider>
+          </ActionSheetProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </Provider>

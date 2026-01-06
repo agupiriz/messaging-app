@@ -21,6 +21,8 @@ const MAPPING = {
   "settings.fill": "settings",
   "check.fill": "check",
   "send.fill": "send",
+  "paperclip": "attach-file",
+  "xmark": "close",
 } as IconMapping;
 
 /**

@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import * as MessageView from "../../../../components/MessageView/MessageView";
 import { getChatEventPropertyById } from "../../../../redux/chat/chat.selector";
 import { useAppSelector } from "../../../../redux/hooks";
+import ImageLayout from "./Layout/Image";
 import Regular from "./Layout/Regular";
 import { MessageProvider } from "./Provider";
 import { MessageProps } from "./types";
@@ -15,6 +16,8 @@ function Message(props: MessageProps) {
     getChatEventPropertyById(id, "isAutoResponse")
   );
 
+  const type = useAppSelector(getChatEventPropertyById(id, "type"));
+
   const timestamp = useAppSelector(getChatEventPropertyById(id, "timestamp"));
 
   const isReceived = !!isAutoResponse;
@@ -23,7 +26,7 @@ function Message(props: MessageProps) {
     <MessageProvider id={id}>
       <MessageView.Root isReceived={isReceived}>
         <View style={styles.messageContent}>
-          <Regular />
+          {type === "image" ? <ImageLayout /> : <Regular />}
         </View>
 
         <MessageView.BottomComposer

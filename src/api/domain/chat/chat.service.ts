@@ -24,4 +24,13 @@ export default class ChatService {
 
     return message;
   }
+
+  public async sendImageMessage(
+    formData: FormData
+  ): Promise<SendMessageResponse> {
+    const message =
+      await this.chatRepository.sendImageMessage<SendMessageResponse>(formData);
+
+    return message;
+  }
 }

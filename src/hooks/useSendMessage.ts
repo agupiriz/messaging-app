@@ -12,3 +12,11 @@ export const useSendTextMessage = () => {
 
   return useQuery({ fetchFn: get });
 };
+
+export const useSendImageMessage = () => {
+  const get = useCallback(async (formData: FormData) => {
+    return chatService.sendImageMessage(formData);
+  }, []);
+
+  return useQuery({ fetchFn: get });
+};

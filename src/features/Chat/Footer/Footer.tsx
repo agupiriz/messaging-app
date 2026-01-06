@@ -5,23 +5,27 @@ import { ThemedView } from "../../../components/ThemedView/ThemedView";
 import { setMessageInput } from "../../../redux/chat";
 import { getMessageInput } from "../../../redux/chat/chat.selector";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import AttachmentButton from "./Attachment";
 import Send from "./Send";
 
 function Footer() {
   const insets = useSafeAreaInsets();
-
   const dispatch = useAppDispatch();
-
   const message = useAppSelector(getMessageInput);
 
-  const onChangeText = useCallback((text: string) => {
-    dispatch(setMessageInput(text));
-  }, []);
+  const onChangeText = useCallback(
+    (text: string) => {
+      dispatch(setMessageInput(text));
+    },
+    [dispatch]
+  );
 
   return (
     <ThemedView
       style={[styles.footerContainer, { paddingBottom: insets.bottom }]}
     >
+      <AttachmentButton />
+
       <TextInput
         style={styles.textInput}
         value={message}
@@ -31,7 +35,7 @@ function Footer() {
         numberOfLines={4}
         maxLength={1000}
         textAlignVertical="top"
-        scrollEnabled={true}
+        scrollEnabled
       />
 
       <Send />
@@ -50,13 +54,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderTopColor: "#ccc",
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     paddingVertical: 12,
     minHeight: 70,
   },
   textInput: {
     borderWidth: 1,
-    width: "100%",
+    flex: 1,
     borderColor: "#ddd",
     borderRadius: 8,
     paddingHorizontal: 12,
