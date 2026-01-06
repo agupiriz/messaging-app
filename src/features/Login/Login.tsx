@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import {
+  ActivityIndicator,
   Image,
   ImageBackground,
   StyleSheet,
@@ -11,10 +12,39 @@ import logoSource from "../../assets/images/logo_chatter_color_2.png";
 import { Text } from "../../components/Text/Text";
 import { ThemedView } from "../../components/ThemedView/ThemedView";
 import { Color } from "../../constants/colors";
+import { useLogin } from "../../hooks/useLogin";
+import { setToken } from "../../redux/global";
+import { useAppDispatch } from "../../redux/hooks";
+import { setStoredToken } from "../../utils/tokenStorage";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const dispatch = useAppDispatch();
+  const { mutate: login, isPending } = useLogin();
+
+  const handleLogin = () => {
+    if (!username.trim() || !password.trim()) {
+      setErrorMessage("Ingresa usuario y contrasena.");
+      return;
+    }
+
+    setErrorMessage(null);
+    login(
+      { username, password },
+      {
+        onSuccess: async (data) => {
+          await setStoredToken(data.token);
+          dispatch(setToken(data.token));
+        },
+        onError: (error) => {
+          setErrorMessage(error.message || "No se pudo iniciar sesion.");
+        },
+      }
+    );
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -33,18 +63,34 @@ function Login() {
             value={username}
             onChangeText={setUsername}
             autoCapitalize="none"
+            editable={!isPending}
           />
           <TextInput
             style={styles.input}
-            placeholder="Contraseña"
+            placeholder="Contrasena"
             placeholderTextColor="#fff"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
+            editable={!isPending}
           />
 
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Iniciar sesión</Text>
+          {errorMessage ? (
+            <Text style={styles.errorText} lightColor="#FFD1D1">
+              {errorMessage}
+            </Text>
+          ) : null}
+
+          <TouchableOpacity
+            style={[styles.button, isPending && styles.buttonDisabled]}
+            onPress={handleLogin}
+            disabled={isPending}
+          >
+            {isPending ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Iniciar sesion</Text>
+            )}
           </TouchableOpacity>
         </ThemedView>
       </ImageBackground>
@@ -103,10 +149,20 @@ const styles = StyleSheet.create({
     backgroundColor: Color.PRIMARY_300,
     borderRadius: 16,
   },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
   buttonText: {
     color: "#fff",
     fontSize: 16,
     textTransform: "none",
     fontWeight: "bold",
   },
+  errorText: {
+    textAlign: "center",
+  },
 });
+
+
+
+
