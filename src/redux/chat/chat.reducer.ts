@@ -9,12 +9,18 @@ export const chatReducers = {
     action: PayloadAction<Message[] | undefined>
   ) => {
     if (action.payload) {
-      state.chatEvents = action.payload.reduce((acc, message) => {
+      const sorted = [...action.payload].sort(
+        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );
+
+      state.chatEvents = sorted.reduce((acc, message) => {
         acc[message.id] = message;
         return acc;
       }, {} as Record<string, Message>);
+      state.messageIds = sorted.map((message) => message.id);
     } else {
       state.chatEvents = undefined;
+      state.messageIds = undefined;
     }
   },
 
@@ -23,6 +29,30 @@ export const chatReducers = {
     action: PayloadAction<ChatPagination | undefined>
   ) => {
     state.pagination = action.payload;
+  },
+
+  setMessageInput: (
+    state: ChatsSlice,
+    action: PayloadAction<string | undefined>
+  ) => {
+    state.messageInput = action.payload;
+  },
+
+  setAddEvent: (state: ChatsSlice, action: PayloadAction<Message>) => {
+    if (!state.chatEvents) {
+      state.chatEvents = {};
+    }
+
+    const exists = !!state.chatEvents[action.payload.id];
+    state.chatEvents[action.payload.id] = action.payload;
+
+    if (!state.messageIds) {
+      state.messageIds = [];
+    }
+
+    if (!exists) {
+      state.messageIds.unshift(action.payload.id);
+    }
   },
 
   setAddEvents: (state: ChatsSlice, action: PayloadAction<Message[]>) => {
@@ -34,23 +64,20 @@ export const chatReducers = {
       state.chatEvents = {};
     }
 
-    action.payload.forEach((message) => {
-      state.chatEvents![message.id] = message;
-    });
-  },
-
-  setMessageInput: (
-    state: ChatsSlice,
-    action: PayloadAction<string | undefined>
-  ) => {
-    state.messageInput = action.payload;
-  },
-
-  setAddEvent: (state: ChatsSlice, action: PayloadAction<Message>) => {
-    if (state.chatEvents) {
-      state.chatEvents[action.payload.id] = action.payload;
-    } else {
-      state.chatEvents = { [action.payload.id]: action.payload };
+    if (!state.messageIds) {
+      state.messageIds = [];
     }
+
+    const batch = [...action.payload].sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+
+    batch.forEach((message) => {
+      const exists = !!state.chatEvents![message.id];
+      state.chatEvents![message.id] = message;
+      if (!exists) {
+        state.messageIds!.push(message.id);
+      }
+    });
   },
 };

@@ -3,6 +3,9 @@ import { RootState } from "../store";
 
 export const getChatEvents = (state: RootState) => state.chatStatus.chatEvents;
 
+export const getChatEventIds = (state: RootState) =>
+  state.chatStatus.messageIds;
+
 export const getChatEventById = (id: string) => (state: RootState) =>
   state.chatStatus.chatEvents?.[id];
 

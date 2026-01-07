@@ -1,27 +1,22 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { FlatList, ImageBackground, StyleSheet, View } from "react-native";
-import {
-  PaginatedMessages
-} from "../../../api/domain/chat/chat.types";
+import { PaginatedMessages } from "../../../api/domain/chat/chat.types";
 import { DEFAULT_LIMIT } from "../../../constants/pagination";
 import { useGetEvents } from "../../../hooks/useGetEvents";
 import { setAddEvents, setChatPagination } from "../../../redux/chat";
-import { getChatEvents, getChatPagination } from "../../../redux/chat/chat.selector";
+import {
+  getChatEventIds,
+  getChatPagination,
+} from "../../../redux/chat/chat.selector";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import LoadingMore from "./LoadingMore";
 import MessageItem from "./Message/Message";
 
 function Body() {
-  const events = useAppSelector(getChatEvents);
+  const messageIds = useAppSelector(getChatEventIds);
   const pagination = useAppSelector(getChatPagination);
   const dispatch = useAppDispatch();
   const { mutate: getEvents, isPending: isLoadingMore } = useGetEvents();
-
-  const data = useMemo(() => {
-    return Object.values(events || {}).sort(
-      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    );
-  }, [events]);
 
   const handleLoadMoreSuccess = useCallback(
     (response: PaginatedMessages) => {
@@ -44,6 +39,11 @@ function Body() {
     );
   }, [getEvents, handleLoadMoreSuccess, isLoadingMore, pagination]);
 
+  const renderItem = useCallback(
+    ({ item }: { item: string }) => <MessageItem id={item} />,
+    []
+  );
+
   return (
     <ImageBackground
       source={require("../../../assets/images/chat-bg-pattern.jpg")}
@@ -57,9 +57,9 @@ function Body() {
       ) : null}
 
       <FlatList
-        data={data}
-        renderItem={({ item }) => <MessageItem key={item.id} id={item.id} />}
-        keyExtractor={(item) => item.id.toString()}
+        data={messageIds ?? []}
+        renderItem={renderItem}
+        keyExtractor={(item) => item}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         inverted
