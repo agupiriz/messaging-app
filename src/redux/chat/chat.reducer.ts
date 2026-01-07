@@ -1,7 +1,6 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 
-import { Message } from "../../api/domain/chat/chat.types";
-import { Pagination } from "../../api/types/paginated";
+import { ChatPagination, Message } from "../../api/domain/chat/chat.types";
 import { ChatsSlice } from "./chat.types";
 
 export const chatReducers = {
@@ -21,9 +20,23 @@ export const chatReducers = {
 
   setChatPagination: (
     state: ChatsSlice,
-    action: PayloadAction<Pagination | undefined>
+    action: PayloadAction<ChatPagination | undefined>
   ) => {
     state.pagination = action.payload;
+  },
+
+  setAddEvents: (state: ChatsSlice, action: PayloadAction<Message[]>) => {
+    if (!action.payload?.length) {
+      return;
+    }
+
+    if (!state.chatEvents) {
+      state.chatEvents = {};
+    }
+
+    action.payload.forEach((message) => {
+      state.chatEvents![message.id] = message;
+    });
   },
 
   setMessageInput: (

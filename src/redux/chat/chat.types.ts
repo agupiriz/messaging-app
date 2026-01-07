@@ -1,10 +1,9 @@
-import { Message } from "../../api/domain/chat/chat.types";
-import { Pagination } from "../../api/types/paginated";
+import { ChatPagination, Message } from "../../api/domain/chat/chat.types";
 
 export interface ChatsSlice {
   chatEvents?: Record<string, Message>;
 
-  pagination?: Pagination;
+  pagination?: ChatPagination;
 
   messageInput?: string;
 }

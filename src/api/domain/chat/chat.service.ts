@@ -1,6 +1,5 @@
-import Paginated from "../../types/paginated";
 import ChatRepository from "./chat.repository";
-import { Message, SendMessageResponse } from "./chat.types";
+import { PaginatedMessages, SendMessageResponse } from "./chat.types";
 
 export default class ChatService {
   private readonly chatRepository: ChatRepository;
@@ -12,8 +11,11 @@ export default class ChatService {
   public async getEvents(
     limit: number,
     offset: number
-  ): Promise<Paginated<Message>> {
-    const chats = await this.chatRepository.getEvents<Message>(limit, offset);
+  ): Promise<PaginatedMessages> {
+    const chats = await this.chatRepository.getEvents<PaginatedMessages>(
+      limit,
+      offset
+    );
 
     return chats;
   }

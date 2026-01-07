@@ -1,7 +1,6 @@
 import { HttpService } from "../../baseRepositories/api/http/axios/axios-http-service";
 import ApiRepository from "../../baseRepositories/api/respository";
 import { ContentType, RequestData } from "../../http/Http";
-import Paginated from "../../types/paginated";
 
 export default class ChatRepository extends ApiRepository {
   constructor() {
@@ -11,7 +10,7 @@ export default class ChatRepository extends ApiRepository {
   public async getEvents<T>(
     limit: number,
     offset: number
-  ): Promise<Paginated<T>> {
+  ): Promise<T> {
     const data: RequestData = {
       endpoint: `${this.endpoint}`,
       params: { limit, offset },

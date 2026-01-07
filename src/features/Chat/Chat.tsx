@@ -1,8 +1,7 @@
-import { useCallback, useLayoutEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { StyleSheet } from "react-native";
 
-import { Message } from "../../api/domain/chat/chat.types";
-import Paginated from "../../api/types/paginated";
+import { PaginatedMessages } from "../../api/domain/chat/chat.types";
 import { ThemedView } from "../../components/ThemedView/ThemedView";
 import { DEFAULT_LIMIT, DEFAULT_OFFSET } from "../../constants/pagination";
 import { useGetEvents } from "../../hooks/useGetEvents";
@@ -18,16 +17,16 @@ export default function Chat() {
 
   const dispatch = useAppDispatch();
 
-  useLayoutEffect(() => {
-    getEvents({ limit: DEFAULT_LIMIT, offset: DEFAULT_OFFSET }, { onSuccess });
-  }, []);
-
-  const onSuccess = useCallback((data: Paginated<Message>) => {
-    const { elements, ...pagination } = data;
+  const onSuccess = useCallback((data: PaginatedMessages) => {
+    const { elements, pagination } = data;
 
     dispatch(setChatEvents(elements));
     dispatch(setChatPagination(pagination));
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    getEvents({ limit: DEFAULT_LIMIT, offset: DEFAULT_OFFSET }, { onSuccess });
+  }, [getEvents, onSuccess]);
 
   return (
     <ThemedView style={styles.container}>
