@@ -139,3 +139,27 @@ Para entregar la evaluación, deberás comprimir la solución en un archivo `.zi
 No existe una única forma correcta de resolver el desafío. Se valoran especialmente las soluciones simples, claras y bien razonadas, por sobre implementaciones innecesariamente complejas.
 
 Desde el equipo de Torem te deseamos mucha suerte! 🍀
+
+## Notas de de implementación
+
+Con respecto a las mejoras de performance: 
+1) note que el listado de mensajes se hacía Object.values(...) + sort(...) en cada actualización del chat.
+Es decir, por cada cambio, se creaba un nuevo array y se ordenaba, por lo que creí que esto afectaba el rendimiento y considere que seria conveniente 
+mantener el orden en el store y no en la UI por cada render o actualización. 
+
+Entonces: Agregue al store un array de ids ordenado, esto permite que la UI renderice directamente ese array sin necesidad de ordenar. 
+Acciones:
+- setChatEvents ordena una sola vez la carga inicial y guarda messageIds.
+- setAddEvent hace unshift (mensajes nuevos).
+
+En resumen: Menos creación de arrays, menos GC, y FlatList recibe una lista estable de IDs.
+
+2) Modifique el useLayoutEffect que habia al momento de traer los mensajes, ya que para una petición async no aportaba mucho y puede hacer que la pantalla “tarde” más en mostrarse. useEffect deja pintar primero y luego corre el fetch, considere que es una solución mas liviana en este caso.
+
+Con respecto a las mejoras de arquitectura:
+Veo las capaz bien separadas, con la capa de API aplicando el Repository + Service, lo cual me parece interesante, 
+La UI separada por features, aplicando custom hooks en los diferentes casos.
+
+Como punto de mejora quizas que a medida que la aplicación crece, considerar manejar alguna capa mas modular, separando modulos con la UI y sus utils o customHooks y que no se concentre todo de manera global como se encuentra ahora.
+
+
