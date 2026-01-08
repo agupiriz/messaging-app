@@ -47,8 +47,8 @@ function Body() {
   return (
     <ImageBackground
       source={require("../../../assets/images/chat-bg-pattern.jpg")}
-      style={styles.bodyContainer}
       resizeMode="repeat"
+      className="flex-1 w-full"
     >
       {isLoadingMore ? (
         <View style={styles.loadingOverlay}>
@@ -74,10 +74,6 @@ function Body() {
 export default React.memo(Body);
 
 const styles = StyleSheet.create({
-  bodyContainer: {
-    flex: 1,
-    width: "100%",
-  },
   scrollContent: {
     flexDirection: "column",
     gap: 8,

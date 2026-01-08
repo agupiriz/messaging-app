@@ -10,6 +10,7 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { Provider } from "react-redux";
+import "../../global.css";
 import { HttpStatusCode } from "../api/baseRepositories/api/http/constants";
 import { BaseError } from "../api/errors/BaseError";
 import { useColorScheme } from "../hooks/useColorSchemeWeb";
