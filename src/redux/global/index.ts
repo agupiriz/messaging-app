@@ -10,4 +10,4 @@ export const globalSlice = createSlice({
   reducers: globalReducers,
 });
 
-export const { setToken } = globalSlice.actions;
+export const { setToken, setError, clearError } = globalSlice.actions;

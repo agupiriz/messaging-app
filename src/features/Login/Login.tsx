@@ -13,25 +13,24 @@ import { Text } from "../../components/Text/Text";
 import { ThemedView } from "../../components/ThemedView/ThemedView";
 import { Color } from "../../constants/colors";
 import { useLogin } from "../../hooks/useLogin";
-import { setToken } from "../../redux/global";
+import { setError, setToken } from "../../redux/global";
 import { useAppDispatch } from "../../redux/hooks";
+import { store } from "../../redux/store";
 import { setStoredToken } from "../../utils/tokenStorage";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const dispatch = useAppDispatch();
   const { mutate: login, isPending } = useLogin();
 
   const handleLogin = () => {
     if (!username.trim() || !password.trim()) {
-      setErrorMessage("Ingresa usuario y contrasena.");
+      store.dispatch("Ingresa usuario y contrasena.");
       return;
     }
 
-    setErrorMessage(null);
     login(
       { username, password },
       {
@@ -40,7 +39,7 @@ function Login() {
           dispatch(setToken(data.token));
         },
         onError: (error) => {
-          setErrorMessage(error.message || "No se pudo iniciar sesion.");
+          store.dispatch(setError(error.message || "Error inesperado"));
         },
       }
     );
@@ -74,12 +73,6 @@ function Login() {
             secureTextEntry
             editable={!isPending}
           />
-
-          {errorMessage ? (
-            <Text style={styles.errorText} lightColor="#FFD1D1">
-              {errorMessage}
-            </Text>
-          ) : null}
 
           <TouchableOpacity
             style={[styles.button, isPending && styles.buttonDisabled]}

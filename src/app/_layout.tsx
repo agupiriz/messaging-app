@@ -13,7 +13,9 @@ import { Provider } from "react-redux";
 import "../../global.css";
 import { HttpStatusCode } from "../api/baseRepositories/api/http/constants";
 import { BaseError } from "../api/errors/BaseError";
+import ErrorBanner from "../components/ErrorBanner/ErrorBanner";
 import { useColorScheme } from "../hooks/useColorSchemeWeb";
+import { setError } from "../redux/global";
 import { resetStore, store } from "../redux/store";
 import { clearStoredToken } from "../utils/tokenStorage";
 import SocketProvider from "./socketProvider";
@@ -32,6 +34,8 @@ export default function RootLayout() {
       if (status === HttpStatusCode.UNAUTHORIZED) {
         return clearStorage();
       }
+
+      store.dispatch(setError(error.message || "Error inesperado"));
 
       // NOTE: Handle other global errors here, f.e.g. show a toast notification
     }
@@ -66,6 +70,7 @@ export default function RootLayout() {
                 </Stack>
 
                 <StatusBar style="light" />
+                <ErrorBanner />
               </GestureHandlerRootView>
             </SocketProvider>
           </ActionSheetProvider>
